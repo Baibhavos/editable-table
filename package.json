@@ -8,6 +8,14 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "react",
+    "next",
+    "table",
+    "editable-table",
+    "table-component",
+    "editable-table-component"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.json",
@@ -58,6 +66,10 @@
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Baibhavos/editable-table"
   },
   "author": "Baibhav Kumar",
   "license": "MIT"

@@ -1,50 +1,117 @@
-# React + TypeScript + Vite
+# Editable Table Component
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Currently, two official plugins are available:
+Editable Table is a powerful React component designed for creating dynamic, editable tables with advanced features like row selection, pagination, and custom cell rendering. It is built using `@tanstack/react-table` and integrates seamlessly with your React projects.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is the first version, so there may be somethings which I missed out which will be added in later updates.
 
-## Expanding the ESLint configuration
+Also will be reducing the number of dependencies. If you want please feel free to contribute in this project.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+-  **Editable Cells**: Inline editing of table cells with automatic state management.
+-  **Row Selection**: Built-in support for row selection with custom checkboxes.
+-  **Add/Remove Rows**: Easily add or remove rows with customizable buttons.
+-  **Pagination Support**: Optional pagination feature for large datasets.
+-  **Sorting**: All rows can be sorted in ascending or descending order by clicking on column headers.
+-  **Tailwind CSS Integration**: Styled using Tailwind CSS for easy customization.
+-  **Filtering**: Supports filtering in columns.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Installation
+
+```bash
+npm install editable-table
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+or
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+yarn add editable-table
 ```
+
+## Usage
+
+```tsx
+import React, { useState } from "react";
+import EditableTable from "editable-table";
+
+const Example = () => {
+   const columns = ["Name", "Age", "Occupation"];
+   const data = [
+      { Name: "John Doe", Age: 28, Occupation: "Engineer" },
+      { Name: "Jane Smith", Age: 34, Occupation: "Designer" },
+   ];
+
+   const handleDataChange = (newData) => {
+      console.log("Updated Data:", newData);
+   };
+
+   return (
+      <EditableTable
+         allColumns={columns}
+         tableData={data}
+         canAddRow={true}
+         canRemoveRow={true}
+         isEditable={true}
+         pagination={true}
+         onDataChange={handleDataChange}
+      />
+   );
+};
+
+export default Example;
+```
+
+## Props
+
+-  **`allColumns: string[]`** (required)  
+   Array of column headers.
+
+-  **`tableData: txnData[]`** (required)  
+   Array of data objects to populate the table.
+
+-  **`canAddRow: boolean`** (optional)  
+   Enables the "Add Row" functionality.
+
+-  **`canRemoveRow: boolean`** (optional)  
+   Enables the "Remove Row" functionality.
+
+-  **`isEditable: boolean`** (required)  
+   Enables inline editing of table cells.
+
+-  **`pagination: boolean`** (optional)  
+   Enables pagination.
+
+-  **`className: string`** (optional)  
+   Additional classes for custom styling.
+
+-  **`onDataChange: (newData: txnData[]) => void`** (optional)  
+   Callback function to handle changes in table data.
+
+## Customization
+
+The table component is designed with flexibility in mind, allowing you to easily customize its appearance and behavior:
+
+-  **Styling**: Use Tailwind CSS classes to style the table and its elements.
+-  **Cell Rendering**: Override default cell rendering to add custom input elements or formatting.
+-  **Sorting**: Built-in sorting for each column header, toggling between ascending and descending order.
+
+## Dependencies
+
+This component relies on the following dependencies:
+
+-  **`react`**: ^18.3.1
+-  **`@tanstack/react-table`**: ^8.20.1
+-  **`@radix-ui/react-icons`**: ^1.3.0
+-  **`tailwindcss`**: ^3.4.9
+
+Ensure these dependencies are installed in your project.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Author
+
+Baibhav Kumar

@@ -472,6 +472,16 @@
   color: rgb(var(--ert-primary));
 }
 
+.ert-page-btn-label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .ert-page-btn-label {
+    display: inline;
+  }
+}
+
 .ert-footer-actions {
   display: flex;
   flex-wrap: wrap;
@@ -644,4 +654,82 @@
   .ert-mobile {
     display: none;
   }
+}
+
+/* Native checkbox (replaces Radix + lucide in the published bundle) */
+.ert-checkbox-root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.ert-checkbox-input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.ert-checkbox-input:disabled {
+  cursor: not-allowed;
+}
+
+.ert-checkbox-box {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  border: 1px solid rgb(var(--ert-border));
+  background: rgb(var(--ert-surface));
+  color: rgb(var(--ert-primary-contrast));
+  transition: border-color var(--ert-transition), background-color var(--ert-transition), box-shadow var(--ert-transition);
+}
+
+.ert-checkbox-input:focus-visible + .ert-checkbox-box {
+  box-shadow: 0 0 0 3px rgb(var(--ert-ring) / 0.22);
+  border-color: rgb(var(--ert-primary) / 0.55);
+}
+
+.ert-checkbox-input:disabled + .ert-checkbox-box {
+  opacity: 0.45;
+}
+
+.ert-checkbox-icon {
+  position: absolute;
+  width: 0.95rem;
+  height: 0.95rem;
+  opacity: 0;
+  transition: opacity var(--ert-transition);
+}
+
+.ert-checkbox-input:checked + .ert-checkbox-box {
+  background: rgb(var(--ert-primary));
+  border-color: rgb(var(--ert-primary));
+  color: rgb(var(--ert-primary-contrast));
+}
+
+.ert-checkbox-input:checked + .ert-checkbox-box .ert-checkbox-icon--check {
+  opacity: 1;
+}
+
+.ert-checkbox-input:indeterminate + .ert-checkbox-box {
+  background: rgb(var(--ert-primary));
+  border-color: rgb(var(--ert-primary));
+  color: rgb(var(--ert-primary-contrast));
+}
+
+.ert-checkbox-input:indeterminate + .ert-checkbox-box .ert-checkbox-icon--minus {
+  opacity: 1;
 }

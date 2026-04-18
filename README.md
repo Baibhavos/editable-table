@@ -4,14 +4,14 @@
 [![npm version](https://img.shields.io/npm/v/editable-table.svg)](https://www.npmjs.com/package/editable-table)
 [![Live demo](https://img.shields.io/badge/demo-StackBlitz-1389fd.svg)](https://stackblitz.com/github/Baibhavos/editable-table?file=src%2FApp.tsx)
 
-React editable table built with [@tanstack/react-table](https://tanstack.com/table), Radix UI primitives, Tailwind-friendly shadcn-style building blocks, and a **scoped design system** (`editable-table.css`) using CSS variables for light, dark, and system themes.
+React editable table built with [@tanstack/react-table](https://tanstack.com/table), **scoped CSS** (`editable-table.css`, no Tailwind required in your app), and **@radix-ui/react-icons** as the only icon peer. Light / dark / system themes use CSS variables on the table root.
 
 ## Installation
 
 Install the package and its **peer dependencies** (your bundler should warn if any are missing):
 
 ```bash
-npm install editable-table @tanstack/react-table tailwindcss @radix-ui/react-icons react react-dom
+npm install editable-table @tanstack/react-table @radix-ui/react-icons react react-dom
 ```
 
 Import the bundled stylesheet once (the JS build does not embed CSS so tree-shaking stays predictable):
@@ -65,7 +65,7 @@ export function Demo() {
 | `canAddRow` | `boolean` | — | Shows **Add row** in the footer. |
 | `canRemoveRow` | `boolean` | — | Shows **Remove selected** in the footer. |
 | `pagination` | `boolean` | — | Client-side pagination (page size 10). Pagination UI is lazy-loaded. |
-| `onDataChange` | `(rows: T[]) => void` | — | Fires after edits, add-row, or remove-row. |
+| `onDataChange` | `(rows: T[]) => void` | — | Fires after **Save** on a row, add-row, or remove-row (not on each keystroke while a row is in draft edit). |
 | `className` | `string` | — | Extra classes on the outer `.ert-root` wrapper. |
 | `stripedRows` | `boolean` | — | Alternating row backgrounds. |
 | `stickyHeader` | `boolean` | — | Sticky header cells inside the scroll container. |
@@ -92,7 +92,7 @@ Use `theme="system"` to follow `prefers-color-scheme` with the bundled light/dar
 
 ## Layout notes
 
-- From the `md` breakpoint up, the component renders a classic `<table>`. Below `md`, the same row model is shown as **stacked cards** with a `<dt>` / `<dd>` label pair per column.
+- From **640px** width up, the component renders a classic `<table>`. Below that, the same row model is shown as **stacked cards** with a `<dt>` / `<dd>` label pair per column.
 - The horizontal scroll area uses a **thin styled scrollbar** on supporting browsers.
 - Primary actions and pagination controls use at least **44×44px** touch targets.
 
@@ -119,6 +119,13 @@ Please keep diffs focused and match existing formatting and TypeScript style.
 
 ## Changelog
 
+### 1.2.0
+
+- **Zero runtime `dependencies`:** the published bundle ships only your code + extracted CSS; peers remain `react`, `react-dom`, `@tanstack/react-table`, and `@radix-ui/react-icons`.
+- Removed Radix Checkbox, lucide-react, clsx, tailwind-merge, CVA, and unused shadcn UI files; selection uses a **native checkbox** styled in `editable-table.css`.
+- Dropped the **tailwindcss** peer (table chrome no longer relies on Tailwind utilities). The repo playground still uses Tailwind for `App.tsx` only.
+- Tighter **Terser** settings and pagination labels use **`.ert-page-btn-label`** instead of Tailwind `hidden sm:inline`.
+
 ### 1.1.0
 
 - Theming via CSS variables and `theme` prop (`light` / `dark` / `system`).
@@ -126,7 +133,7 @@ Please keep diffs focused and match existing formatting and TypeScript style.
 - New props: `stripedRows`, `stickyHeader`, `tableHeight`, `emptyStateMessage`, `loadingState`, `cellValidation`, `theme`.
 - Modern toolbar, pagination (lazy-loaded UI chunk), and add/remove actions with Radix icons.
 - `React.memo` on the table component; validation context to limit column-definition churn.
-- **Peer dependencies:** `react`, `react-dom`, `@tanstack/react-table`, `tailwindcss`, `@radix-ui/react-icons`.
+- **Peer dependencies:** `react`, `react-dom`, `@tanstack/react-table`, `@radix-ui/react-icons` (as of 1.2.0, `tailwindcss` is no longer a peer).
 - **Exports:** conditional exports for `import` / `require` / `types`, plus `editable-table/style.css`.
 - **Rollup:** `inlineDynamicImports` for a single ESM/CJS file each; extracted `dist/editable-table.css`; externals include peers and `react/jsx-runtime`.
 - `sideEffects` lists `**/*.css` for correct bundler behavior when importing the stylesheet entry.

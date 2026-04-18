@@ -42,7 +42,19 @@ export default [
                 extract: path.resolve(__dirname, "dist/editable-table.css"),
                 minimize: true,
             }),
-            terser(),
+            terser({
+                compress: {
+                    passes: 2,
+                    pure_getters: true,
+                    unsafe_arrows: true,
+                },
+                mangle: {
+                    safari10: true,
+                },
+                format: {
+                    comments: false,
+                },
+            }),
         ],
         external: [...peerDeps, "react/jsx-runtime"],
     },

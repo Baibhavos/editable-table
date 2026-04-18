@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { flushSync } from 'react-dom'
 import {
     type CellContext,
     type Column,
@@ -18,7 +19,7 @@ import {
 import { CaretSortIcon, CheckIcon, Cross2Icon, Pencil1Icon, PlusIcon, TrashIcon } from '@radix-ui/react-icons'
 
 import { Checkbox } from './ui/checkbox'
-import { cn } from '../lib/utils'
+import { cx } from '../lib/utils'
 
 import './editable-table.css'
 
@@ -148,7 +149,7 @@ function EditableCell<T extends Record<string, unknown>>({
             onBlur={onBlur}
             title={errorMessage ?? undefined}
             aria-invalid={errorMessage ? true : undefined}
-            className={cn('ert-cell-input', errorMessage && 'ert-cell-input--invalid')}
+            className={cx('ert-cell-input', errorMessage && 'ert-cell-input--invalid')}
         />
     )
 }
@@ -445,8 +446,10 @@ function EditableTableInner<T extends Record<string, unknown> = Record<string, u
             editingBaselineRef.current = null
             return
         }
-        const row = dataRef.current[editingRowIndex]
+        // Snapshot when `editingRowIndex` changes only (not on every `data` keystroke).
+        const row = data[editingRowIndex]
         editingBaselineRef.current = row ? cloneRow(row) : null
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: baseline must not reset while typing
     }, [editingRowIndex])
 
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
@@ -573,18 +576,23 @@ function EditableTableInner<T extends Record<string, unknown> = Record<string, u
 
     const addRow = React.useCallback(() => {
         skipAutoResetPageIndex()
-        setEditingRowIndex(null)
-        editingBaselineRef.current = null
         const newRow = allColumns.reduce(
             (acc, column) => ({ ...acc, [column]: '' }),
             {} as T,
         )
-        setData((prev) => {
-            const newData = [...prev, newRow]
-            onDataChange?.(newData)
-            return newData
+        let newIndex = 0
+        flushSync(() => {
+            setData((prev) => {
+                const newData = [...prev, newRow]
+                newIndex = newData.length - 1
+                onDataChange?.(newData)
+                return newData
+            })
         })
-    }, [allColumns, onDataChange, skipAutoResetPageIndex])
+        if (isEditable) {
+            setEditingRowIndex(newIndex)
+        }
+    }, [allColumns, isEditable, onDataChange, skipAutoResetPageIndex])
 
     const removeSelectedRows = React.useCallback(
         (selectedRows: number[]) => {
@@ -664,23 +672,23 @@ function EditableTableInner<T extends Record<string, unknown> = Record<string, u
     const isEmpty = !loadingState && data.length === 0
 
     return (
-        <div className={cn('ert-root w-full min-w-0', className)} data-theme={theme}>
+        <div className={cx('ert-root w-full min-w-0', className)} data-theme={theme}>
             <RowEditContext.Provider value={rowEditValue}>
                 <ValidationContext.Provider value={validationValue}>
                     <div className="ert-shell">
-                        <div className={cn('ert-scroll ert-scroll--styled')} style={shellStyle}>
+                        <div className={cx('ert-scroll ert-scroll--styled')} style={shellStyle}>
                             {isEmpty ? (
                                 <div className="ert-empty">{emptyStateMessage}</div>
                             ) : (
                                 <>
-                                    <table className={cn('ert-table ert-desktop', stripedRows && 'ert-striped')}>
+                                    <table className={cx('ert-table ert-desktop', stripedRows && 'ert-striped')}>
                                         <thead className="ert-thead">
                                             {table.getHeaderGroups().map((headerGroup) => (
                                                 <tr key={headerGroup.id}>
                                                     {headerGroup.headers.map((header) => (
                                                         <th
                                                             key={header.id}
-                                                            className={cn(
+                                                            className={cx(
                                                                 'ert-th',
                                                                 stickyHeader && 'ert-th--sticky',
                                                                 header.column.id === 'actions' && 'ert-th-actions',
@@ -718,7 +726,7 @@ function EditableTableInner<T extends Record<string, unknown> = Record<string, u
                                                 table.getRowModel().rows.map((row) => (
                                                     <tr
                                                         key={row.id}
-                                                        className={cn(
+                                                        className={cx(
                                                             row.getIsSelected() && 'ert-row-selected',
                                                             editingRowIndex === row.index && 'ert-row-editing',
                                                         )}
@@ -726,7 +734,7 @@ function EditableTableInner<T extends Record<string, unknown> = Record<string, u
                                                         {row.getVisibleCells().map((cell) => (
                                                             <td
                                                                 key={cell.id}
-                                                                className={cn(
+                                                                className={cx(
                                                                     'ert-td',
                                                                     cell.column.id === 'actions' && 'ert-td-actions',
                                                                 )}

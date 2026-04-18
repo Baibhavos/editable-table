@@ -40,7 +40,7 @@ export function PaginationControls({ table }: PaginationControlsProps) {
                     aria-label="Previous page"
                 >
                     <ChevronLeftIcon width={18} height={18} />
-                    <span className="hidden sm:inline">Prev</span>
+                    <span className="ert-page-btn-label">Prev</span>
                 </button>
                 <button
                     type="button"
@@ -49,7 +49,7 @@ export function PaginationControls({ table }: PaginationControlsProps) {
                     disabled={!table.getCanNextPage()}
                     aria-label="Next page"
                 >
-                    <span className="hidden sm:inline">Next</span>
+                    <span className="ert-page-btn-label">Next</span>
                     <ChevronRightIcon width={18} height={18} />
                 </button>
                 <button

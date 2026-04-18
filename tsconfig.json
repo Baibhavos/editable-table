@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "dist",
-    "emitDeclarationOnly": true,
     "jsx": "react",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

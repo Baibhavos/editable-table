@@ -1,116 +1,143 @@
-# Editable Table Component
+# editable-table
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://img.shields.io/npm/v/editable-table.svg)](https://www.npmjs.com/package/editable-table)
+[![Live demo](https://img.shields.io/badge/demo-StackBlitz-1389fd.svg)](https://stackblitz.com/github/Baibhavos/editable-table?file=src%2FApp.tsx)
 
-Editable Table is a powerful React component designed for creating dynamic, editable tables with advanced features like row selection, pagination, and custom cell rendering. It is built using `@tanstack/react-table` and integrates seamlessly with your React projects.
-
-This is the first version, so there may be somethings which I missed out which will be added in later updates.
-
-Also will be reducing the number of dependencies. If you want please feel free to contribute in this project.
-
-## Features
-
--  **Editable Cells**: Inline editing of table cells with automatic state management.
--  **Row Selection**: Built-in support for row selection with custom checkboxes.
--  **Add/Remove Rows**: Easily add or remove rows with customizable buttons.
--  **Pagination Support**: Optional pagination feature for large datasets.
--  **Sorting**: All rows can be sorted in ascending or descending order by clicking on column headers.
--  **Tailwind CSS Integration**: Styled using Tailwind CSS for easy customization.
--  **Filtering**: Supports filtering in columns.
+React editable table built with [@tanstack/react-table](https://tanstack.com/table), Radix UI primitives, Tailwind-friendly shadcn-style building blocks, and a **scoped design system** (`editable-table.css`) using CSS variables for light, dark, and system themes.
 
 ## Installation
 
-```bash
-npm install editable-table
-```
-
-or
+Install the package and its **peer dependencies** (your bundler should warn if any are missing):
 
 ```bash
-yarn add editable-table
+npm install editable-table @tanstack/react-table tailwindcss @radix-ui/react-icons react react-dom
 ```
 
-## Usage
+Import the bundled stylesheet once (the JS build does not embed CSS so tree-shaking stays predictable):
+
+```ts
+import "editable-table/style.css";
+```
+
+## Quick start
 
 ```tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import EditableTable from "editable-table";
+import "editable-table/style.css";
 
-const Example = () => {
-   const columns = ["Name", "Age", "Occupation"];
-   const data = [
-      { Name: "John Doe", Age: 28, Occupation: "Engineer" },
-      { Name: "Jane Smith", Age: 34, Occupation: "Designer" },
-   ];
+type Row = { name: string; age: string };
 
-   const handleDataChange = (newData) => {
-      console.log("Updated Data:", newData);
-   };
+const columns: (keyof Row & string)[] = ["name", "age"];
 
-   return (
-      <EditableTable
-         allColumns={columns}
-         tableData={data}
-         canAddRow={true}
-         canRemoveRow={true}
-         isEditable={true}
-         pagination={true}
-         onDataChange={handleDataChange}
-      />
-   );
-};
+export function Demo() {
+  const [rows, setRows] = useState<Row[]>([
+    { name: "Ada", age: "36" },
+    { name: "Grace", age: "85" },
+  ]);
 
-export default Example;
+  return (
+    <EditableTable<Row>
+      theme="system"
+      stripedRows
+      stickyHeader
+      tableHeight="420px"
+      allColumns={columns}
+      tableData={rows}
+      isEditable
+      canAddRow
+      canRemoveRow
+      pagination
+      onDataChange={setRows}
+    />
+  );
+}
 ```
 
 ## Props
 
--  **`allColumns: string[]`** (required)  
-   Array of column headers.
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `allColumns` | `readonly (keyof T & string)[]` | — | Accessor keys and header labels, in column order. |
+| `tableData` | `T[] \| null` | — | Row data. Use `null` to show the “no data” placeholder instead of the grid. |
+| `isEditable` | `boolean` | — | Enables per-row **Edit → Save / Cancel**: inputs only while editing; **Save** calls `onDataChange` with the full table; **Cancel** restores the row from when Edit was pressed. |
+| `canAddRow` | `boolean` | — | Shows **Add row** in the footer. |
+| `canRemoveRow` | `boolean` | — | Shows **Remove selected** in the footer. |
+| `pagination` | `boolean` | — | Client-side pagination (page size 10). Pagination UI is lazy-loaded. |
+| `onDataChange` | `(rows: T[]) => void` | — | Fires after edits, add-row, or remove-row. |
+| `className` | `string` | — | Extra classes on the outer `.ert-root` wrapper. |
+| `stripedRows` | `boolean` | — | Alternating row backgrounds. |
+| `stickyHeader` | `boolean` | — | Sticky header cells inside the scroll container. |
+| `tableHeight` | `string` | — | Sets `--ert-max-height` on the scroll area (for example `"400px"` or `"min(70vh,560px)"`). |
+| `emptyStateMessage` | `React.ReactNode` | `"No rows to display."` | Shown when `tableData` is a non-null empty array. |
+| `loadingState` | `boolean` | `false` | Skeleton rows instead of data rows. |
+| `cellValidation` | `(column, value) => string \| null` | — | Runs on blur; non-null strings mark the cell invalid (`title` tooltip + red accent). |
+| `theme` | `'light' \| 'dark' \| 'system'` | `'system'` | Sets `data-theme` on the root for bundled CSS tokens. |
 
--  **`tableData: txnData[]`** (required)  
-   Array of data objects to populate the table.
+Exported types: `EditableTableProps<T>`, `EditableTableTheme`, `EditableTableCellValidation`.
 
--  **`canAddRow: boolean`** (optional)  
-   Enables the "Add Row" functionality.
+## Theming
 
--  **`canRemoveRow: boolean`** (optional)  
-   Enables the "Remove Row" functionality.
+The table root has class `ert-root` and `data-theme={theme}`. Colors, radii, and shadows are driven by **RGB tokens** (space-separated) so you can override them from your app stylesheet:
 
--  **`isEditable: boolean`** (required)  
-   Enables inline editing of table cells.
+```css
+.my-page .ert-root {
+  --ert-primary: 99 102 241;
+  --ert-radius: 18px;
+}
+```
 
--  **`pagination: boolean`** (optional)  
-   Enables pagination.
+Use `theme="system"` to follow `prefers-color-scheme` with the bundled light/dark token sets.
 
--  **`className: string`** (optional)  
-   Additional classes for custom styling.
+## Layout notes
 
--  **`onDataChange: (newData: txnData[]) => void`** (optional)  
-   Callback function to handle changes in table data.
+- From the `md` breakpoint up, the component renders a classic `<table>`. Below `md`, the same row model is shown as **stacked cards** with a `<dt>` / `<dd>` label pair per column.
+- The horizontal scroll area uses a **thin styled scrollbar** on supporting browsers.
+- Primary actions and pagination controls use at least **44×44px** touch targets.
 
-## Customization
+## Scripts (repository)
 
-The table component is designed with flexibility in mind, allowing you to easily customize its appearance and behavior:
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Vite playground (`src/App.tsx`). |
+| `npm run lint` | ESLint on `src/`. |
+| `npm run typecheck` | `tsc --noEmit` against `tsconfig.json`. |
+| `npm run build` | Emit declaration files to `dist/` (`tsconfig.build.json`). |
+| `npm run rollup` | Clean `dist/`, bundle ESM + CJS + `editable-table.css` + `index.d.ts`. |
 
--  **Styling**: Use Tailwind CSS classes to style the table and its elements.
--  **Cell Rendering**: Override default cell rendering to add custom input elements or formatting.
--  **Sorting**: Built-in sorting for each column header, toggling between ascending and descending order.
+## Contributing
 
-## Dependencies
+Issues and pull requests are welcome on [GitHub](https://github.com/Baibhavos/editable-table).
 
-This component relies on the following dependencies:
+1. Fork the repository and create a branch for your change.
+2. Run `npm install`, then `npm run lint` and `npm run typecheck` before opening a PR.
+3. For UI changes, run `npm run dev` and exercise both wide and narrow viewports.
+4. For packaging changes, run `npm run rollup` and confirm `dist/` contains `index.esm.js`, `index.cjs.js`, `index.d.ts`, and `editable-table.css`.
 
--  **`react`**: ^18.3.1
--  **`@tanstack/react-table`**: ^8.20.1
--  **`@radix-ui/react-icons`**: ^1.3.0
--  **`tailwindcss`**: ^3.4.9
+Please keep diffs focused and match existing formatting and TypeScript style.
 
-Ensure these dependencies are installed in your project.
+## Changelog
+
+### 1.1.0
+
+- Theming via CSS variables and `theme` prop (`light` / `dark` / `system`).
+- Responsive layout: stacked “card” rows below `md`, table with horizontal scroll and styled scrollbar from `md` up.
+- New props: `stripedRows`, `stickyHeader`, `tableHeight`, `emptyStateMessage`, `loadingState`, `cellValidation`, `theme`.
+- Modern toolbar, pagination (lazy-loaded UI chunk), and add/remove actions with Radix icons.
+- `React.memo` on the table component; validation context to limit column-definition churn.
+- **Peer dependencies:** `react`, `react-dom`, `@tanstack/react-table`, `tailwindcss`, `@radix-ui/react-icons`.
+- **Exports:** conditional exports for `import` / `require` / `types`, plus `editable-table/style.css`.
+- **Rollup:** `inlineDynamicImports` for a single ESM/CJS file each; extracted `dist/editable-table.css`; externals include peers and `react/jsx-runtime`.
+- `sideEffects` lists `**/*.css` for correct bundler behavior when importing the stylesheet entry.
+
+### 1.0.0
+
+- Initial release with editable cells, selection, sorting, filtering, pagination, and add/remove rows.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE](LICENSE) if present in the repository.
 
 ## Author
 

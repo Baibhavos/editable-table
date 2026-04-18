@@ -1,9 +1,25 @@
-/src
-/node_modules
-/test
+# Source and local tooling (publish only dist/ + README via "files")
+src/
+public/
+coverage/
+
+*.config.js
+*.config.ts
+eslint.config.js
+postcss.config.js
+tailwind.config.js
+vite.config.ts
+tsconfig.json
+tsconfig.*.json
+tsconfig.node.json
+components.json
+index.html
 
 .env
+.env.*
 .DS_Store
+.git/
+.github/
 
-tsconfig.json
-tsup.config.ts
+node_modules/
+*.log

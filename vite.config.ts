@@ -14,10 +14,10 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'EditableTable',
       formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'es' : 'cjs'}.js`,
+      fileName: (format) => `index.${format === 'es' ? 'esm' : 'cjs'}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', '@tanstack/react-table', '@radix-ui/react-icons'],
       output: {
         globals: {
           react: 'React',

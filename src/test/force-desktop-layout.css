@@ -1,0 +1,8 @@
+/* jsdom does not evaluate @media reliably; keep queries on the desktop table. */
+.ert-root .ert-desktop {
+  display: table !important;
+}
+
+.ert-root .ert-mobile {
+  display: none !important;
+}

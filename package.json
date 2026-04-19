@@ -1,5 +1,5 @@
 {
-  "name": "editable-table",
+  "name": "edit-react-table",
   "version": "1.2.0",
   "description": "A React component for editable tables.",
   "main": "dist/index.cjs.js",

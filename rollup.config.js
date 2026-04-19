@@ -5,7 +5,6 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
-import terser from "@rollup/plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 
@@ -40,20 +39,8 @@ export default [
             typescript({ tsconfig: "./tsconfig.json" }),
             postcss({
                 extract: path.resolve(__dirname, "dist/editable-table.css"),
-                minimize: true,
-            }),
-            terser({
-                compress: {
-                    passes: 2,
-                    pure_getters: true,
-                    unsafe_arrows: true,
-                },
-                mangle: {
-                    safari10: true,
-                },
-                format: {
-                    comments: false,
-                },
+                // Ship readable CSS; app bundlers minify for production.
+                minimize: false,
             }),
         ],
         external: [...peerDeps, "react/jsx-runtime"],

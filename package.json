@@ -1,6 +1,6 @@
 {
   "name": "edit-react-table",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A React component for editable tables.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -43,7 +43,6 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^11.1.6",
     "@tanstack/react-table": "^8.20.1",
     "@testing-library/jest-dom": "^6.9.1",
